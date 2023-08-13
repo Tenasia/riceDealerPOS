@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../api/database_helper.dart';
+import '../../api/database_helper.dart';
 class RepackDialog extends StatefulWidget {
 
   final Map<String, dynamic> retail_product;
@@ -29,6 +29,7 @@ class _RepackDialogState extends State<RepackDialog> {
   List<bool> checkedStates = [];
   List<TextEditingController> controllers = [];
   List<TextEditingController> quantityControllers = [];
+  List<Map<String, dynamic>> availablePackages = [];
   bool isConfirmed = false;
 
 
@@ -49,6 +50,10 @@ class _RepackDialogState extends State<RepackDialog> {
     }
   }
 
+
+
+
+
   void _handleDialogDismissed() {
     widget.onDialogDismissed();
   }
@@ -56,6 +61,7 @@ class _RepackDialogState extends State<RepackDialog> {
   @override
   void initState() {
     super.initState();
+    widget.packages;
     if (widget.packages.isNotEmpty) {
       selectedPackageAmount = widget.packages[0]['package'];
       textFieldController = TextEditingController(text: selectedPackageAmount != null ? selectedPackageAmount!.replaceAll('KG', '') : '');
@@ -73,8 +79,6 @@ class _RepackDialogState extends State<RepackDialog> {
     Map<String, dynamic> updatedRetailProduct = widget.retail_product;
     List<Map<String, dynamic>> packageAmounts = widget.packages;
 
-
-
     return SingleChildScrollView(
       child: Dialog(
           child: Container(
@@ -87,13 +91,21 @@ class _RepackDialogState extends State<RepackDialog> {
                 updatedRetailProduct['item_name'] + ' - ' + updatedRetailProduct['rice_category'] + ' (' + 'Retail' +  ')',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 25,
+                  fontSize: 32,
                 ),
               ),
               const SizedBox(height: 16),
+              Text(
+                'Available Packages To Repack',
+                style: const TextStyle(
+                  fontSize: 24,
+                ),
+              ),
+              const SizedBox(height: 5),
+
               Container(
                 height: 50,
-                color: Colors.blue[800],
+                color: Color(0xff394a5a),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: packageAmounts.length,
@@ -151,7 +163,7 @@ class _RepackDialogState extends State<RepackDialog> {
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero,
-                          ), backgroundColor: selectedPackageAmount == package ? Colors.lightBlue : Colors.blue[800],
+                          ), backgroundColor: selectedPackageAmount == package ? Color(0xff232d37) : Color(0xff394a5a),
                           // Apply any other styles or conditions based on the selected package
                         ),
                         child: Text(package, style: const TextStyle(fontSize: 24)),

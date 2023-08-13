@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../api/database_helper.dart';
+
 class ViewSalesDialog extends StatefulWidget {
-  final List<dynamic> items;
   final String formattedTime;
   final Map<String, dynamic> product;
 
-  const ViewSalesDialog({required this.items, required this.formattedTime, required this.product});
+  const ViewSalesDialog({required this.formattedTime, required this.product});
 
 
   @override
@@ -14,9 +15,23 @@ class ViewSalesDialog extends StatefulWidget {
 
 class _ViewSalesDialogState extends State<ViewSalesDialog> {
 
+  List<dynamic> itemSales = [];
+
+  Future<void> fetchSalesData(String cartId) async {
+    final data = await DatabaseHelper.getItemSales(cartId);
+    setState(() {
+      itemSales = List<Map<String, dynamic>>.from(data);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSalesData(widget.product['id']);
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Dialog(
       child: ListView(
         shrinkWrap: true,
@@ -203,9 +218,9 @@ class _ViewSalesDialogState extends State<ViewSalesDialog> {
               // Add more DataColumn as needed
             ],
             rows: List<DataRow>.generate(
-              widget.items.length,
+              itemSales.length,
                   (index) {
-                final item = widget.items[index];
+                final item = itemSales[index];
                 final total = item['total'].toString();
                 return DataRow(
                   cells: <DataCell>[

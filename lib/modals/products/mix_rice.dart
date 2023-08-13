@@ -58,11 +58,8 @@ class _MixWholesaleState extends State<MixWholesale>{
       final data = await DatabaseHelper.getRetails();
       final sellingPrice = product!['selling_price'];
 
-      final retailsList = List<Map<String, dynamic>>.from(data)
-          .where((item) =>
-      item['selling_price'] == sellingPrice &&
-          item['item_id'] != product!['item_id'])
-          .toList();
+      final retailsList = List<Map<String, dynamic>>.from(data).toList();
+
 
 
       return retailsList;
@@ -110,15 +107,12 @@ class _MixWholesaleState extends State<MixWholesale>{
       'in_item_id': items[0]['item_id'],
       'no_item_difference': quantityController.text,
     };
-
-    print(data);
     try {
       await DatabaseHelper.mixRice(data);
 
       // Navigate to another page
       widget.onSelectIndex(2); // Access the callback function through the widget property
     } catch (e) {
-      print('Failed to send data: $e');
     }
   }
 
@@ -233,7 +227,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.local ? Color(0xff232d37) : const Color(0xff394a5a),
+                                      primary: _currentState == StateType.local ? const Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -257,7 +251,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                               ),
                               Expanded(
                                 flex: 3,
-                                child: Container(
+                                child: SizedBox(
                                   height: double.infinity,
                                   width: double.infinity,
 
@@ -271,7 +265,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.foreign ? Color(0xff232d37) : const Color(0xff394a5a),
+                                      primary: _currentState == StateType.foreign ? const Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -311,7 +305,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
-                              primary: selectedPackage == '1KG' ? Color(0xff232d37) : Color(0xff394a5a),
+                              primary: selectedPackage == '1KG' ? const Color(0xff232d37) : const Color(0xff394a5a),
                               // Apply any other styles or conditions based on the selected package
                             ),
                             child: const Text('Retail', style: TextStyle(fontSize: 24)),
@@ -524,15 +518,15 @@ class _MixWholesaleState extends State<MixWholesale>{
                           flex: 3,
                           child: Padding(
                             padding: const EdgeInsets.all(32.0),
-                            child: Container(
+                            child: SizedBox(
                               height: 25,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
 
-                                  Text('SELECTED RICE:', style: TextStyle(color: Colors.black, fontSize: 24),),
+                                  const Text('SELECTED RICE:', style: TextStyle(color: Colors.black, fontSize: 24),),
 
-                                  SizedBox(height: 32.0),
+                                  const SizedBox(height: 32.0),
 
                                   Row(
                                     children: [
@@ -565,18 +559,18 @@ class _MixWholesaleState extends State<MixWholesale>{
 
                                   Row(
                                     children: [
-                                      Expanded(
+                                      const Expanded(
                                         child: Text('Stocks in KG:', style: TextStyle(fontSize: 20, color: Colors.black),)
                                       ),
                                       Expanded(
                                         child: TextFormField(
                                           controller: originalQuantityController,
                                           enabled: false,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 20,
                                           ),
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             labelStyle: TextStyle(
                                               color: Colors.black,
                                             ),
@@ -597,7 +591,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                   ),
 
 
-                                  Text('Quantity to mix:', style: TextStyle(color: Colors.black, fontSize: 18),),
+                                  const Text('Quantity to mix:', style: TextStyle(color: Colors.black, fontSize: 18),),
 
                                   Row(
                                     children: [
@@ -606,10 +600,10 @@ class _MixWholesaleState extends State<MixWholesale>{
                                         child: TextFormField(
                                           controller: quantityController,
                                           enabled: !addedAnItem,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Colors.black,
                                           ),
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             labelStyle: TextStyle(
                                               color: Colors.black,
                                             ),
@@ -631,7 +625,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                           inputFormatters: [
                                             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,1}$')),
                                           ],
-                                          keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false), // Set keyboard prompt to an integer
+                                          keyboardType: const TextInputType.numberWithOptions(signed: false, decimal: false), // Set keyboard prompt to an integer
                                           onChanged: (value) {
 
                                             if (value.isEmpty) {
@@ -641,7 +635,6 @@ class _MixWholesaleState extends State<MixWholesale>{
                                             double? enteredQuantity = double.parse(quantityController.text);
 
                                             double maxQuantity = double.parse(originalQuantityController.text);
-                                            print(maxQuantity);
 
                                             if (enteredQuantity == null || enteredQuantity < 0 || enteredQuantity > maxQuantity) {
                                               enteredQuantity = enteredQuantity?.clamp(0, maxQuantity)?.toDouble();
@@ -651,7 +644,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                         ),
 
                                       ),
-                                      SizedBox(width: 8), // Adjust the spacing between the button and the text field
+                                      const SizedBox(width: 8), // Adjust the spacing between the button and the text field
 
                                       Expanded(
                                         flex: 1,
@@ -662,8 +655,8 @@ class _MixWholesaleState extends State<MixWholesale>{
                                               barrierDismissible: false,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: Text('Confirmation'),
-                                                  content: Text('Confirm addition?'),
+                                                  title: const Text('Confirmation'),
+                                                  content: const Text('Confirm addition?'),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
@@ -681,7 +674,6 @@ class _MixWholesaleState extends State<MixWholesale>{
 
                                                         setState(() {
                                                           widget.product!['no_item_received'] = updatedMaxQuantity.toString();
-                                                          // quantityController.text = '';
                                                           originalQuantityController.text = updatedMaxQuantity.toString();
 
                                                           WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -693,7 +685,7 @@ class _MixWholesaleState extends State<MixWholesale>{
 
                                                         Navigator.pop(context); // Close the dialog
                                                       },
-                                                      child: Text('Confirm'),
+                                                      child: const Text('Confirm'),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
@@ -702,25 +694,22 @@ class _MixWholesaleState extends State<MixWholesale>{
                                                         });
                                                         Navigator.pop(context); // Close the dialog
                                                       },
-                                                      child: Text('Cancel'),
+                                                      child: const Text('Cancel'),
                                                     ),
                                                   ],
                                                 );
                                               },
                                             );
                                           },
-                                          child: Text('Add'),
                                           style: ButtonStyle(
                                             backgroundColor: addedAnItem || items.isEmpty ? MaterialStateProperty.all(Colors.grey) : null,
                                           ),
+                                          child: const Text('Add'),
                                         )
                                         ,
                                       ),
                                     ],
                                   ),
-
-
-
                                 ],
                               ),
                             ),
@@ -741,15 +730,13 @@ class _MixWholesaleState extends State<MixWholesale>{
                             itemBuilder: (context, index) {
                               final item = items[index];
 
-                              // totalQuantityController.text = item['no_item_received'].toString();
-
                               originalTotalQuantityController.text = item['no_item_received'].toString();
 
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left:32, right: 32, top: 16,),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left:32, right: 32, top: 16,),
                                     child: Text('RICE TO MIX WITH:', style: TextStyle(color: Colors.black, fontSize: 24),),
                                   ),
 
@@ -835,7 +822,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                         color: index % 2 == 0 ? Colors.grey[300] : Colors.grey[200],
                                         borderRadius: BorderRadius.circular(0),
                                       ),
-                                      child: Text('Stocks after mixing:', style: TextStyle(color: Colors.black, fontSize: 18),)),
+                                      child: const Text('Stocks after mixing:', style: TextStyle(color: Colors.black, fontSize: 18),)),
 
                                   Container(
                                     padding: const EdgeInsets.only(left:32.0, right: 32),
@@ -849,10 +836,11 @@ class _MixWholesaleState extends State<MixWholesale>{
                                           flex: 4,
                                           child: TextFormField(
                                             controller: totalQuantityController,
-                                            style: TextStyle(
+                                            readOnly: true,
+                                            style: const TextStyle(
                                               color: Colors.black,
                                             ),
-                                            decoration: InputDecoration(
+                                            decoration: const InputDecoration(
                                               labelStyle: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -875,7 +863,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                           ),
 
                                         ),
-                                        SizedBox(width: 8), // Adjust the spacing between the button and the text field
+                                        const SizedBox(width: 8), // Adjust the spacing between the button and the text field
 
                                         Expanded(
                                           flex: 1,
@@ -902,12 +890,12 @@ class _MixWholesaleState extends State<MixWholesale>{
                                               });
 
                                             },
-                                            child: Text('RMV.'),
                                             style: ButtonStyle(
                                               backgroundColor: addedAnItem
                                                   ? MaterialStateProperty.all(Colors.red)
                                                   : MaterialStateProperty.all(Colors.grey),
                                             ),
+                                            child: const Text('RMV.'),
 
                                           ),
                                         ),
@@ -924,7 +912,7 @@ class _MixWholesaleState extends State<MixWholesale>{
 
                         Expanded(
                           flex: 1,
-                          child: Container(
+                          child: SizedBox(
                             height: 25,
                             child: ElevatedButton(
                               onPressed: !addedAnItem ? null : () {
@@ -942,7 +930,6 @@ class _MixWholesaleState extends State<MixWholesale>{
                                           },
                                         ),
                                         ElevatedButton(
-                                          child: const Text('Mix Rice', style: TextStyle(fontSize: 24)),
                                           onPressed: () {
                                             mixRice();
                                             Navigator.of(context).pop();
@@ -950,6 +937,7 @@ class _MixWholesaleState extends State<MixWholesale>{
                                           style: ElevatedButton.styleFrom(
                                             primary: Colors.green,
                                           ),
+                                          child: const Text('Mix Rice', style: TextStyle(fontSize: 24)),
                                         ),
                                       ],
                                     );

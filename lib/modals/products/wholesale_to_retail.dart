@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../api/database_helper.dart';
+import '../../api/database_helper.dart';
 
 class DistributionDialog extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -73,7 +73,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        width: 450,
+        width: 600,
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -82,7 +82,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
               widget.product['item_name'] + ' (' + widget.selectedPackage + ')',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 25,
+                fontSize: 32,
               ),
             ),
             const SizedBox(height: 16),
@@ -93,7 +93,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                   child: Text(
                     'Distribute to Retail Sacks:   ',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 24,
                     ),
                   ),
                 ),
@@ -104,7 +104,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                     child: TextFormField(
                       controller: textFieldController,
                       keyboardType: TextInputType.number,
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      style: const TextStyle(color: Colors.white, fontSize: 24),
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         labelStyle: TextStyle(color: Colors.grey[600]),
@@ -124,7 +124,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                   child: Text(
                     '  Stocks: ',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 24,
                     ),
                   ),
                 ),
@@ -134,7 +134,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                   child: Text(
                     widget.product['no_item_received'].toString(),
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 24,
                     ),
                   ),
                 ),
@@ -147,7 +147,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                   child: Text(
                     'Distributed Amount in KG: ',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 24,
                     ),
                   ),
                 ),
@@ -157,7 +157,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                     controller: totalAmountController,
                     readOnly: true,
                     enabled: false,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    style: const TextStyle(color: Colors.white, fontSize: 24),
                     textAlign: TextAlign.center,
                     decoration: const InputDecoration(
                       suffixText: 'KG',
@@ -179,7 +179,7 @@ class _DistributionDialogState extends State<DistributionDialog> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancel'),
+                  child: const Text('Cancel', style: TextStyle(fontSize: 24),),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -233,14 +233,14 @@ class _DistributionDialogState extends State<DistributionDialog> {
 
                               }
                                   : null,
-                              child: const Text('Distribute'),
+                              child: const Text('Distribute', style: TextStyle(fontSize: 24),),
                             ),
                           ],
                         );
                       },
                     );
                   },
-                  child: const Text('Distribute'),
+                  child: const Text('Distribute', style: TextStyle(fontSize: 24),),
                 ),
               ],
             ),

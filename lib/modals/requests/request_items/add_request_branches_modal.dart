@@ -62,7 +62,6 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
       final productList = List<Map<String, dynamic>>.from(data);
       return productList;
     } catch (e) {
-      print('Error fetching product list: $e');
       return []; // Return an empty list if there is an error
     }
   }
@@ -148,7 +147,6 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
       // Navigate to another page
       widget.onSelectIndex(3); // Access the callback function through the widget property
     } catch (e) {
-      print('Failed to send data: $e');
     }
   }
 
@@ -250,7 +248,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                       children: [
                         Container(
                           height: 50,
-                          color: Colors.blue[800],
+                          color: Color(0xff394a5a),
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -293,7 +291,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: selectedBranch == branch ? Colors.lightBlue : Colors.blue[800],
+                                      primary: selectedBranch == branch ? Color(0xff232d37) : const Color(0xff394a5a),
                                       // Apply any other styles or conditions based on the selected package
                                     ),
                                     child: Text(branch, style: const TextStyle(fontSize: 24)),
@@ -323,7 +321,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.local ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.local ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -361,7 +359,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.foreign ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.foreign ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -387,7 +385,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                         ),
                         Container(
                           height: 50,
-                          color: Colors.blue[800],
+                          color: const Color(0xff394a5a),
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -411,7 +409,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: selectedPackage == package ? Colors.lightBlue : Colors.blue[800],
+                                      primary: selectedPackage == package ? Color(0xff232d37) : const Color(0xff394a5a),
                                       // Apply any other styles or conditions based on the selected package
                                     ),
                                     child: Text(package, style: const TextStyle(fontSize: 24)),
@@ -514,7 +512,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                                     style: const TextStyle(color: Colors.black, fontSize: 18),
                                                   ),
                                                   Text(
-                                                    '${product['no_item_received'].toString()} Sacks',
+                                                    '${product['no_item_received'].toString()} Bags',
                                                     style: const TextStyle(color: Colors.black, fontSize: 18),
                                                   ),
                                                 ],
@@ -1018,7 +1016,7 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                                 items[index]['quantity'] != 1 &&
                                                 items[index]['selling_category'] != 'Retail'
                                                 ? Text(
-                                              '${items[index]['quantity']} Sacks',
+                                              '${items[index]['quantity']} Bags',
                                               style: const TextStyle(
                                                 fontSize: 20.0,
                                                 color: Colors.black,
@@ -1155,81 +1153,81 @@ class _AddRequestBranchesModalState extends State<AddRequestBranchesModal>{
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: SizedBox(
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Center(
-                                            child: SingleChildScrollView(
-                                              child: AlertDialog(
-                                                title: Text('Confirm Credit Payment of ₱$subTotal', style: const TextStyle(fontSize: 32)),
-                                                content: Column(
-                                                  children: [
-                                                    const Text('Are you sure about the items?', style: TextStyle(fontSize: 24)),
-                                                    const SizedBox(height: 10),
-                                                    Text('(This will be placed in your branch\'s tab)', style: TextStyle(fontSize: 18, color: Colors.grey[400]))
-                                                  ],
-                                                ),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    child: const Text('Cancel', style: TextStyle(fontSize: 24, color: Colors.white)),
-                                                    onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                  ),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      paymentMethod = 'Credit';
-                                                      processCheckoutFromMainBranch();
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      primary: Colors.deepOrange,
-                                                    ),
-                                                    child: const Text('Confirm', style: TextStyle(fontSize: 24)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.deepOrange,
-                                    onPrimary: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/icons/bank-svgrepo-com.svg',
-                                          width: 30,
-                                          height: 30,
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(width: 15,),
-                                        const Text(
-                                          'Use Credit',
-                                          style: TextStyle(fontSize: 24),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Expanded(
+                            //   flex: 1,
+                            //   child: SizedBox(
+                            //     height: 50,
+                            //     child: ElevatedButton(
+                            //       onPressed: () {
+                            //         setState(() {
+                            //           showDialog(
+                            //             context: context,
+                            //             builder: (BuildContext context) {
+                            //               return Center(
+                            //                 child: SingleChildScrollView(
+                            //                   child: AlertDialog(
+                            //                     title: Text('Confirm Credit Payment of ₱$subTotal', style: const TextStyle(fontSize: 32)),
+                            //                     content: Column(
+                            //                       children: [
+                            //                         const Text('Are you sure about the items?', style: TextStyle(fontSize: 24)),
+                            //                         const SizedBox(height: 10),
+                            //                         Text('(This will be placed in your branch\'s tab)', style: TextStyle(fontSize: 18, color: Colors.grey[400]))
+                            //                       ],
+                            //                     ),
+                            //                     actions: <Widget>[
+                            //                       TextButton(
+                            //                         child: const Text('Cancel', style: TextStyle(fontSize: 24, color: Colors.white)),
+                            //                         onPressed: () {
+                            //                           Navigator.of(context).pop();
+                            //                         },
+                            //                       ),
+                            //                       ElevatedButton(
+                            //                         onPressed: () {
+                            //                           paymentMethod = 'Credit';
+                            //                           processCheckoutFromMainBranch();
+                            //                           Navigator.of(context).pop();
+                            //                         },
+                            //                         style: ElevatedButton.styleFrom(
+                            //                           primary: Colors.deepOrange,
+                            //                         ),
+                            //                         child: const Text('Confirm', style: TextStyle(fontSize: 24)),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                 ),
+                            //               );
+                            //             },
+                            //           );
+                            //         });
+                            //       },
+                            //       style: ElevatedButton.styleFrom(
+                            //         primary: Colors.deepOrange,
+                            //         onPrimary: Colors.white,
+                            //         shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(0),
+                            //         ),
+                            //       ),
+                            //       child: Center(
+                            //         child: Row(
+                            //           mainAxisAlignment: MainAxisAlignment.center,
+                            //           children: [
+                            //             SvgPicture.asset(
+                            //               'assets/icons/bank-svgrepo-com.svg',
+                            //               width: 30,
+                            //               height: 30,
+                            //               color: Colors.white,
+                            //             ),
+                            //             const SizedBox(width: 15,),
+                            //             const Text(
+                            //               'Use Credit',
+                            //               style: TextStyle(fontSize: 24),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
 

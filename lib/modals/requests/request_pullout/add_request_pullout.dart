@@ -6,6 +6,7 @@ import 'package:rice_dealer_pos/api/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rice_dealer_pos/views/settings_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rice_dealer_pos/modals/requests/request_pullout/pullout_button.dart';
 
 enum StateType { local, foreign}
 
@@ -22,6 +23,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
 
   StateType _currentState = StateType.local;
   late int selectedItemIndex;
+  String note = '';
 
   List<Map<String, dynamic>> items = [];
   List<Map<String, dynamic>> packages = [];
@@ -51,7 +53,6 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
       final productList = List<Map<String, dynamic>>.from(data);
       return productList;
     } catch (e) {
-      print('Error fetching product list: $e');
       return []; // Return an empty list if there is an error
     }
   }
@@ -61,7 +62,6 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
     setState(() {
       items.add(item);
     });
-    print(items);
   }
 
   void removeItemFromCart(int index) {
@@ -77,6 +77,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
     Map<String, dynamic> data = {
       'userId': user_id,
       'branchId': branchId,
+      'reason': note,
       'items': items,
     };
 
@@ -86,7 +87,6 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
       // Navigate to another page
       widget.onSelectIndex(3); // Access the callback function through the widget property
     } catch (e) {
-      print('Failed to send data: $e');
     }
   }
 
@@ -197,7 +197,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.local ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.local ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +235,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.foreign ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.foreign ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -261,7 +261,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
                         ),
                         Container(
                           height: 50,
-                          color: Colors.blue[800],
+                          color: const Color(0xff394a5a),
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -285,7 +285,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: selectedPackage == package ? Colors.lightBlue : Colors.blue[800],
+                                      primary: selectedPackage == package ? Color(0xff232d37) : const Color(0xff394a5a),
                                       // Apply any other styles or conditions based on the selected package
                                     ),
                                     child: Text(package, style: const TextStyle(fontSize: 24)),
@@ -616,7 +616,6 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
 
                                                           // Calculate the maximum allowed quantity based on available stock
                                                           double maxQuantity = double.parse(item['no_item_received'].toString());
-                                                          print(maxQuantity);
 
                                                           // Check if the entered quantity is negative or exceeds the maximum allowed quantity
                                                           if (enteredQuantity < 0 || enteredQuantity > maxQuantity) {
@@ -752,7 +751,7 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
                                                 items[index]['quantity'] != 1 &&
                                                 items[index]['selling_category'] != 'Retail'
                                                 ? Text(
-                                              '${items[index]['quantity']} Sacks',
+                                              '${items[index]['quantity']} Bags',
                                               style: const TextStyle(
                                                 fontSize: 20.0,
                                                 color: Colors.black,
@@ -781,101 +780,9 @@ class _AddRequestPullOutState extends State<AddRequestPullOut>{
                         ),
 
 
-
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            height: 25,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (items.isEmpty) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Cannot Pullout Items', style: TextStyle(fontSize: 32)),
-                                          content: const Text('The list is empty. Cannot pullout items.', style: TextStyle(fontSize: 24)),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('Cancel', style: TextStyle(fontSize: 24)),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            ElevatedButton(
-                                              child: const Text('OK', style: TextStyle(fontSize: 24)),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                primary: Colors.red,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  } else {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Confirm Pullout Items', style: TextStyle(fontSize: 32)),
-                                          content: const Text('Are you sure about the requested items?', style: TextStyle(fontSize: 24)),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('Cancel', style: TextStyle(fontSize: 24)),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            ElevatedButton(
-                                              child: const Text('Request', style: TextStyle(fontSize: 24)),
-                                              onPressed: () {
-                                                requestPullOut();
-                                                Navigator.of(context).pop();
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                primary: Colors.green,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-
-                                  }
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.green[500],
-                                onPrimary: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0),
-                                ),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/icons/request-sent-svgrepo-com.svg',
-                                      width: 40,
-                                      height: 40,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(width: 15,),
-                                    const Text(
-                                      'Request Pullout',
-                                      style: TextStyle(fontSize: 30),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        RequestPulloutDialog(items: items, onSelectIndex: (index){
+                          widget.onSelectIndex(index);
+                        }),
 
 
                       ],

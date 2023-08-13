@@ -54,7 +54,6 @@ class _AddRequestItemState extends State<AddRequestItem>{
     setState(() {
         items.add(item);
       });
-    print(items);
   }
 
   void removeItemFromCart(int index) {
@@ -79,7 +78,6 @@ class _AddRequestItemState extends State<AddRequestItem>{
       // Navigate to another page
       widget.onSelectIndex(3); // Access the callback function through the widget property
     } catch (e) {
-      print('Failed to send data: $e');
     }
   }
 
@@ -190,7 +188,7 @@ class _AddRequestItemState extends State<AddRequestItem>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.local ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.local ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +226,7 @@ class _AddRequestItemState extends State<AddRequestItem>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.foreign ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.foreign ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -254,7 +252,7 @@ class _AddRequestItemState extends State<AddRequestItem>{
                         ),
                         Container(
                           height: 50,
-                          color: Colors.blue[800],
+                          color: const Color(0xff394a5a),
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -278,7 +276,7 @@ class _AddRequestItemState extends State<AddRequestItem>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: selectedPackage == package ? Colors.lightBlue : Colors.blue[800],
+                                      primary: selectedPackage == package ? Color(0xff232d37) : const Color(0xff394a5a),
                                       // Apply any other styles or conditions based on the selected package
                                     ),
                                     child: Text(package, style: const TextStyle(fontSize: 24)),
@@ -397,7 +395,6 @@ class _AddRequestItemState extends State<AddRequestItem>{
                                   } else {
                                     final productList = snapshot.data!;
 
-                                    print(productList);
 
                                     final filteredProducts = productList
                                         .where((product) =>
@@ -405,7 +402,6 @@ class _AddRequestItemState extends State<AddRequestItem>{
                                         product['rice_category'] == 'Imported')
                                         .toList();
 
-                                    print(filteredProducts);
 
 
                                     if (filteredProducts.isEmpty) {
@@ -716,7 +712,7 @@ class _AddRequestItemState extends State<AddRequestItem>{
                                                 items[index]['quantity'] != 1 &&
                                                 items[index]['selling_category'] != 'Retail'
                                                 ? Text(
-                                              '${items[index]['quantity']} Sacks',
+                                              '${items[index]['quantity']} Bags',
                                               style: const TextStyle(
                                                 fontSize: 20.0,
                                                 fontWeight: FontWeight.normal,

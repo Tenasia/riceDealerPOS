@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../api/database_helper.dart';
+import '../../../api/database_helper.dart';
 
 class AcceptDeliveryDialog extends StatefulWidget {
 
@@ -23,6 +23,8 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
   List<TextEditingController> textControllers = [];
 
   List<List<String>> rowDataList = [];
+  bool hasDiscrepancy = false;
+  String note = '';
 
 
   @override
@@ -30,8 +32,9 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
     super.initState();
     // Create controllers for each row
     for (int i = 0; i < widget.request['requested_items'].length; i++) {
-      textControllers.add(TextEditingController(text: widget.request['requested_items'][i]['no_item']));
+      textControllers.add(TextEditingController());
     }
+
   }
 
   @override
@@ -52,20 +55,18 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
           'no_item': items[1],
           'quantity_received': items[2],
           'request_id': items[3],
+          'note': note,
         };
         mapList.add(data);
       } else {
-        print('Invalid number of items in the list');
       }
     }
 
     try {
       await DatabaseHelper.sendDeliveryConfirmation(mapList);
-      print('Success');
 
       // Refresh the data after sending the confirmation
     } catch (e) {
-      print('Failed to send data: $e');
     }
     // Rest of your code
   }
@@ -283,8 +284,20 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
                                 icon: const Icon(Icons.remove),
                                 onPressed: () {
                                   double currentValue = double.tryParse(textControllers[index].text) ?? 0.0;
+
                                   if (currentValue > 0) {
                                     double newValue = currentValue - 1;
+
+                                    if (newValue != double.parse(noItem)){
+                                      setState(() {
+                                        hasDiscrepancy = true;
+                                      });
+                                    } else{
+                                      setState(() {
+                                        hasDiscrepancy = false;
+                                      });
+                                    }
+
                                     textControllers[index].text = '$newValue';
                                   }
                                 },
@@ -301,6 +314,19 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
                                     ],
                                     style: const TextStyle(fontSize: 24),
                                     onChanged: (value) {
+
+                                      print(double.parse(value));
+                                      print(double.parse(noItem));
+
+                                      if (double.parse(value) != double.parse(noItem)){
+                                        setState(() {
+                                          hasDiscrepancy = true;
+                                        });
+                                      } else{
+                                        setState(() {
+                                          hasDiscrepancy = false;
+                                        });
+                                      }
                                       // Handle onChanged event if needed
                                     },
                                   ),
@@ -311,6 +337,17 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
                                 onPressed: () {
                                   double currentValue = double.tryParse(textControllers[index].text) ?? 0.0;
                                   double newValue = currentValue + 1.0;
+
+                                  if (newValue != double.parse(noItem)){
+                                    setState(() {
+                                      hasDiscrepancy = true;
+                                    });
+                                  } else{
+                                    setState(() {
+                                      hasDiscrepancy = false;
+                                    });
+                                  }
+
                                   textControllers[index].text = newValue.toString();
                                 },
                               ),
@@ -341,56 +378,156 @@ class _AcceptDeliveryDialogState extends State<AcceptDeliveryDialog> {
                 const SizedBox(width: 15),
                 ElevatedButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        bool anyEmpty = textControllers.any((controller) => controller.text.isEmpty || controller.text == "0");
-                        String dialogTitle = anyEmpty ? 'Incomplete Form' : 'Confirm Items Received';
-                        String dialogContent = anyEmpty ? 'Please fill in all the fields of the QTY receive.' : 'Are you sure the items amount is confirmed?';
 
-                        return AlertDialog(
-                          title: Text(dialogTitle),
-                          content: Text(dialogContent),
-                          actions: <Widget>[
-                            ElevatedButton(
-                              onPressed: textControllers.any((controller) => controller.text.isEmpty || controller.text == "0") ? null : () {
-                                // Iterate over the rows and collect the data
-                                rowDataList = List<List<String>>.generate(
-                                  widget.request['requested_items'].length,
-                                      (index) {
-                                    final requestedItem = widget.request['requested_items'][index];
-                                    final itemID = requestedItem['item_id'];
-                                    final noItem = requestedItem['no_item'];
-                                    final textFieldValue1 = textControllers[index].text;
-                                    final requestId = widget.request['id'];
+                    if (hasDiscrepancy && !textControllers.any((controller) => controller.text.isEmpty)){
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return StatefulBuilder(
+                            builder: (BuildContext context, StateSetter setState) {
+                              return Center(
+                                child: SingleChildScrollView(
+                                  child: AlertDialog(
+                                    title: const Text('Items has discrepancy', style: TextStyle(fontSize: 32)),
+                                    content: Column(
+                                      children: [
+                                        const Text(
+                                          'Are you sure about the items that you received?',
+                                          style: TextStyle(fontSize: 24),
+                                        ),
+                                        const SizedBox(height: 24),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'State the reason for the items discrepancies:',
+                                              style: TextStyle(fontSize: 18, color: Colors.grey[200]),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            TextField(
+                                              maxLines: null, // Set to null for a multi-line input field
+                                              decoration: const InputDecoration(
+                                                hintText: 'Enter your note...',
+                                                border: OutlineInputBorder(),
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  note = value;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Cancel', style: TextStyle(fontSize: 24)),
+                                        onPressed: () {
+                                          setState((){
+                                            note = '';
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: note.isNotEmpty
+                                            ? () {
+                                          rowDataList = List<List<String>>.generate(
+                                            widget.request['requested_items'].length,
+                                                (index) {
+                                              final requestedItem = widget.request['requested_items'][index];
+                                              final itemID = requestedItem['item_id'];
+                                              final noItem = requestedItem['no_item'];
+                                              final textFieldValue1 = textControllers[index].text;
+                                              final requestId = widget.request['id'];
 
-                                    return [itemID, noItem, textFieldValue1, requestId];
-                                  },
-                                );
+                                              return [itemID, noItem, textFieldValue1, requestId];
+                                            },
+                                          );
 
-                                // Convert the rowDataList to JSON
-                                final jsonData = json.encode(rowDataList);
-                                getRequestItem(jsonData);
+                                          // Convert the rowDataList to JSON
+                                          final jsonData = json.encode(rowDataList);
+                                          getRequestItem(jsonData);
 
-                                textControllers.clear();
-                                widget.fetchItemsRequests();
-                                _handleDialogDismissed();
+                                          textControllers.clear();
+                                          widget.fetchItemsRequests();
+                                          _handleDialogDismissed();
 
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Submit', style: TextStyle(fontSize: 24)),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context); // Close the dialog
-                              },
-                              child: const Text('Cancel', style: TextStyle(fontSize: 24)),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        }
+                                            : null,
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.green,
+                                        ),
+                                        child: const Text('Confirm', style: TextStyle(fontSize: 24)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          bool anyEmpty = textControllers.any((controller) => controller.text.isEmpty);
+                          String dialogTitle = anyEmpty ? 'Incomplete Form' : 'Confirm Items Received';
+                          String dialogContent = anyEmpty ? 'Please fill in all the fields of the QTY receive.' : 'Are you sure the items amount is confirmed?';
+
+                          return AlertDialog(
+                            title: Text(dialogTitle, style: TextStyle(fontSize: 32),),
+                            content: Text(dialogContent, style: TextStyle(fontSize: 24),),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                onPressed: textControllers.any((controller) => controller.text.isEmpty) ? null : () {
+                                  // Iterate over the rows and collect the data
+
+
+
+                                  rowDataList = List<List<String>>.generate(
+                                    widget.request['requested_items'].length,
+                                        (index) {
+                                      final requestedItem = widget.request['requested_items'][index];
+                                      final itemID = requestedItem['item_id'];
+                                      final noItem = requestedItem['no_item'];
+                                      final textFieldValue1 = textControllers[index].text;
+                                      final requestId = widget.request['id'];
+
+                                      return [itemID, noItem, textFieldValue1, requestId];
+                                    },
+                                  );
+
+                                  // Convert the rowDataList to JSON
+                                  final jsonData = json.encode(rowDataList);
+                                  getRequestItem(jsonData);
+
+                                  textControllers.clear();
+                                  widget.fetchItemsRequests();
+                                  _handleDialogDismissed();
+
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Submit', style: TextStyle(fontSize: 24)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                },
+                                child: const Text('Cancel', style: TextStyle(fontSize: 24)),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+
                   },
                   child: const Text('Submit', style: TextStyle(fontSize: 24)),
                 ),

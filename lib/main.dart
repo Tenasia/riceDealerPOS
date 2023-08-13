@@ -1,19 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:rice_dealer_pos/pages/login_page.dart';
-import 'package:rice_dealer_pos/views/main_view.dart';
 import 'package:rice_dealer_pos/constants.dart';
 
-void main(){
-  runApp(const MyApp());
-}
+void main() => runApp(MyApp());
 
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Rice Dealer POS',

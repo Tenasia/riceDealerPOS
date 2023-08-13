@@ -6,6 +6,7 @@ import 'package:rice_dealer_pos/api/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rice_dealer_pos/views/settings_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rice_dealer_pos/state_manager.dart';
 
 enum StateType { local, foreign}
 
@@ -51,7 +52,6 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
       final productList = List<Map<String, dynamic>>.from(data);
       return productList;
     } catch (e) {
-      print('Error fetching product list: $e');
       return []; // Return an empty list if there is an error
     }
   }
@@ -61,7 +61,6 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
     setState(() {
       items.add(item);
     });
-    print(items);
   }
 
   void removeItemFromCart(int index) {
@@ -86,7 +85,6 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
       // Navigate to another page
       widget.onSelectIndex(3); // Access the callback function through the widget property
     } catch (e) {
-      print('Failed to send data: $e');
     }
   }
 
@@ -197,7 +195,7 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.local ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.local ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +233,7 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: _currentState == StateType.foreign ? Colors.lightBlue : Colors.blue[800],
+                                      primary: _currentState == StateType.foreign ? Color(0xff232d37) : const Color(0xff394a5a),
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -261,7 +259,7 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                         ),
                         Container(
                           height: 50,
-                          color: Colors.blue[800],
+                          color: const Color(0xff394a5a),
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -285,7 +283,7 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.zero,
                                       ),
-                                      primary: selectedPackage == package ? Colors.lightBlue : Colors.blue[800],
+                                      primary: selectedPackage == package ? Color(0xff232d37) : const Color(0xff394a5a),
                                       // Apply any other styles or conditions based on the selected package
                                     ),
                                     child: Text(package, style: const TextStyle(fontSize: 24)),
@@ -708,7 +706,7 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                                                 items[index]['quantity'] != 1 &&
                                                 items[index]['selling_category'] != 'Retail'
                                                 ? Text(
-                                              '${items[index]['quantity']} Sacks',
+                                              '${items[index]['quantity']} Bags',
                                               style: const TextStyle(
                                                 fontSize: 20.0,
                                                 fontWeight: FontWeight.normal,
@@ -752,8 +750,8 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text('Cannot Pullout Items', style: TextStyle(fontSize: 32)),
-                                          content: const Text('The list is empty. Cannot pullout items.', style: TextStyle(fontSize: 24)),
+                                          title: const Text('Cannot Reprice Items', style: TextStyle(fontSize: 32)),
+                                          content: const Text('The list is empty. Cannot reprice items.', style: TextStyle(fontSize: 24)),
                                           actions: <Widget>[
                                             TextButton(
                                               child: const Text('Cancel', style: TextStyle(fontSize: 24)),
@@ -779,7 +777,7 @@ class _AddRequestRepriceState extends State<AddRequestReprice>{
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text('Confirm Pullout Items', style: TextStyle(fontSize: 32)),
+                                          title: const Text('Confirm Repricing Items', style: TextStyle(fontSize: 32)),
                                           content: const Text('Are you sure about the requested items?', style: TextStyle(fontSize: 24)),
                                           actions: <Widget>[
                                             TextButton(
