@@ -71,7 +71,6 @@ class _PrintingItemSalesPageState extends State<PrintingItemSalesPage>{
     if (isConnected == "true") {
       List<int> bytes = await getTicket();
       final result = await BluetoothThermalPrinter.writeBytes(bytes);
-      BluetoothThermalPrinter.disconnect();
       setState(() {
         connected = false;
       });
@@ -85,7 +84,6 @@ class _PrintingItemSalesPageState extends State<PrintingItemSalesPage>{
     if (isConnected == "true") {
       List<int> bytes = await getGraphicsTicket();
       final result = await BluetoothThermalPrinter.writeBytes(bytes);
-      BluetoothThermalPrinter.disconnect();
       print("Print $result");
     } else {
       //Hadnle Not Connected Senario
